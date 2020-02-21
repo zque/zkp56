@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -416,33 +416,33 @@ UART_HandleTypeDef UART1_Handler; //UART句柄
 //}
 // 
 ////串口1中断服务程序
-void USART2_IRQHandler(void)                	
-{ 
-	u32 timeout=0;
-    u32 maxDelay=0x1FFFF;
-#if SYSTEM_SUPPORT_OS	 	//使用OS
-	OSIntEnter();    
-#endif
-	
-	HAL_UART_IRQHandler(&huart2);	//调用HAL库中断处理公用函数
-	
-	timeout=0;
-    while (HAL_UART_GetState(&huart2)!=HAL_UART_STATE_READY)//等待就绪
-	{
-        timeout++;////超时处理
-        if(timeout>maxDelay) break;		
-	}
-     
-	timeout=0;
-	while(HAL_UART_Receive_IT(&huart2,(u8 *)aRxBuffer, RXBUFFERSIZE)!=HAL_OK)//一次处理完成之后，重新开启中断并设置RxXferCount为1
-	{
-        timeout++; //超时处理
-        if(timeout>maxDelay) break;	
-	}
-#if SYSTEM_SUPPORT_OS	 	//使用OS
-	OSIntExit();  											 
-#endif
-} 
+//void USART2_IRQHandler(void)                	
+//{ 
+//	u32 timeout=0;
+//    u32 maxDelay=0x1FFFF;
+//#if SYSTEM_SUPPORT_OS	 	//使用OS
+//	OSIntEnter();    
+//#endif
+//	
+//	HAL_UART_IRQHandler(&huart2);	//调用HAL库中断处理公用函数
+//	
+//	timeout=0;
+//    while (HAL_UART_GetState(&huart2)!=HAL_UART_STATE_READY)//等待就绪
+//	{
+//        timeout++;////超时处理
+//        if(timeout>maxDelay) break;		
+//	}
+//     
+//	timeout=0;
+//	while(HAL_UART_Receive_IT(&huart2,(u8 *)aRxBuffer, RXBUFFERSIZE)!=HAL_OK)//一次处理完成之后，重新开启中断并设置RxXferCount为1
+//	{
+//        timeout++; //超时处理
+//        if(timeout>maxDelay) break;	
+//	}
+//#if SYSTEM_SUPPORT_OS	 	//使用OS
+//	OSIntExit();  											 
+//#endif
+//} 
 #endif	
 
 /*下面代码我们直接把中断控制逻辑写在中断服务函数内部。*/

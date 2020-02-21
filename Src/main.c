@@ -39,7 +39,8 @@
 #include "usmart.h"
 #include "stmflash.h"
 #include "stdlib.h"
-#define  aprint(...)	{HAL_GPIO_WritePin(RE_GPIO_Port,RE_Pin,GPIO_PIN_SET);delay_us(200);printf(__VA_ARGS__);delay_us(200);HAL_GPIO_WritePin(RE_GPIO_Port,RE_Pin,GPIO_PIN_RESET);}
+//#define  aprint(...)	{HAL_GPIO_WritePin(RE_GPIO_Port,RE_Pin,GPIO_PIN_SET);delay_us(200);printf(__VA_ARGS__);delay_us(200);HAL_GPIO_WritePin(RE_GPIO_Port,RE_Pin,GPIO_PIN_RESET);}
+#define aprint(...) printf(__VA_ARGS__)
 #define FFT_LENGTH 		1024
 //#define adc2i					670							//adc转化成电流i的比值
 #define bee				HAL_GPIO_To
@@ -556,7 +557,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   /* NOTE: This function Should not be modified, when the callback is needed,
            the HAL_UART_TxCpltCallback could be implemented in the user file
    */
-	if(huart->Instance==USART1)//如果是串口1
+	if(huart->Instance==USART2)//如果是串口1
 	{
 		if(aRxBuffer2[0]==0x23)
 		{
@@ -564,7 +565,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			//aprint("testtttttttttttttttttt");
 			
 			memset(USART_RX_BUF,0x00,200);
-			HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer2, 1);
+			HAL_UART_Receive_IT(&huart2, (uint8_t *)&aRxBuffer2, 1);
 //			HAL_UART_Receive_IT(&huart2, (uint8_t *)&aRxBuffer2, 1);
 			cnt=0;
 		}
@@ -572,7 +573,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		{
 			USART_RX_BUF[cnt-1]=aRxBuffer2[0];
 			++cnt;
-			HAL_UART_Receive_IT(&huart1, (uint8_t *)&aRxBuffer2, 1);
+			HAL_UART_Receive_IT(&huart2, (uint8_t *)&aRxBuffer2, 1);
 		}
 		
 		//HAL_UART_Receive_IT(&huart2, (uint8_t *)&aRxBuffer2, 1);
@@ -635,11 +636,14 @@ void ufunc(void)
 
 //**************************************printf*****************************//
 int fputc(int ch, FILE *f)
-{ 	if(printf_flag){
-			while((USART1->ISR&0X40)==0);  
-			USART1->TDR=(uint8_t)ch; } 
-		else{while((USART2->ISR&0X40)==0);
-				USART2->TDR=(uint8_t)ch;}
+{	
+// 	if(printf_flag){
+//			while((USART1->ISR&0X40)==0);  
+//			USART1->TDR=(uint8_t)ch; } 
+//		else{while((USART2->ISR&0X40)==0);
+//				USART2->TDR=(uint8_t)ch;}
+		while((USART2->ISR&0X40)==0);
+		USART2->TDR=(uint8_t)ch;
 	return ch;
 }
 //void aprint(const char *a, ...)

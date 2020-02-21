@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -26,7 +26,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-///* USER CODE BEGIN Includes */
+/* USER CODE BEGIN Includes */
 #include "sys.h"
 #include "stdio.h"	
 extern RTC_DateTypeDef sdatestruct;
@@ -60,26 +60,6 @@ extern u8 aRxBuffer[RXBUFFERSIZE];//HAL库USART接收Buffer
 //如果想串口中断接收，请不要注释以下宏定义
 
 
-/* USER CODE END Includes */
-
-extern UART_HandleTypeDef huart2;
-extern UART_HandleTypeDef huart3;
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
-
-extern void _Error_Handler(char *, int);
-
-void MX_USART2_UART_Init(void);
-void MX_USART3_UART_Init(void);
-
-
-
-
-
-
- 
 /* USER CODE END Includes */
 
 extern UART_HandleTypeDef huart1;

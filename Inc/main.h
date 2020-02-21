@@ -74,6 +74,8 @@ void set_limitA(int a);
 #define BEEP_GPIO_Port GPIOA
 #define KM1_Pin GPIO_PIN_12
 #define KM1_GPIO_Port GPIOA
+#define IZ0_Pin GPIO_PIN_0
+#define IZ0_GPIO_Port GPIOD
 #define FIN_Pin GPIO_PIN_5
 #define FIN_GPIO_Port GPIOB
 #define TKOUT_Pin GPIO_PIN_6
