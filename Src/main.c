@@ -39,6 +39,7 @@
 #include "usmart.h"
 #include "stmflash.h"
 #include "stdlib.h"
+#include "stdarg.h"
 //#define  aprint(...)	{HAL_GPIO_WritePin(RE_GPIO_Port,RE_Pin,GPIO_PIN_SET);delay_us(200);printf(__VA_ARGS__);delay_us(200);HAL_GPIO_WritePin(RE_GPIO_Port,RE_Pin,GPIO_PIN_RESET);}
 #define aprint(...) printf(__VA_ARGS__)
 #define FFT_LENGTH 		1024
@@ -96,6 +97,7 @@ u8 waveFlag=0;
 uint8_t timeOutFlag=0;
 uint8_t cnt = 1 ;
 u8 start1 =0,start2=0;
+char buffer4g[256];
 
 //u16 USART_RX_STA;
 //u8 USART_RX_BUF[200];
@@ -235,7 +237,7 @@ void get_info(void);
 void set_adc2i(int a);
 void get_wave(void);
 void ufunc(void);
-
+int printf4g(char *format, ...);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -252,7 +254,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-  
+  //printf("");
 
   /* Enable I-Cache---------------------------------------------------------*/
   SCB_EnableICache();
@@ -431,6 +433,8 @@ int main(void)
 				aprint("%f\t%f\r\n",avg0[i],avg1[i]);
 			}
 		}
+		
+		//printf4g("test");
 								
   }
   /* USER CODE END 3 */
@@ -592,6 +596,19 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 									
 							
 }
+void Uart_RxOvertimeEnable(void)
+{
+    /*使能接收超时功能*/
+    SET_BIT(huart1.Instance->CR2,USART_CR2_RTOEN);
+    /*使能超时接收中断*/
+    //SET_BIT(huart1.Instance->CR1,USART_CR1_RTOIE);
+    /*向RTOR寄存器填入需要超时的长度，单位为一个波特时长,3.5个字节*11波特长度 = 39  */
+    WRITE_REG(huart1.Instance->RTOR,39);  
+	READ_BIT(huart1.Instance->ISR,USART_ISR_RTOF);
+	SET_BIT(huart1.Instance->ICR,USART_ICR_RTOCF);
+}
+
+
 void ufunc(void)
 	{
 		int temp;
@@ -645,6 +662,21 @@ int fputc(int ch, FILE *f)
 		while((USART2->ISR&0X40)==0);
 		USART2->TDR=(uint8_t)ch;
 	return ch;
+}
+
+int printf4g(char *format, ...)
+{
+
+   va_list aptr;
+   int ret;
+
+   va_start(aptr, format);
+   ret = vsprintf(buffer4g, format, aptr);
+   va_end(aptr);
+	printf("AT+CIPSEND=1,%i,\"219.128.73.196\",20030\r\n",ret);
+	delay_ms(15);	
+	printf("%s\n", buffer4g);
+   return(ret);
 }
 //void aprint(const char *a, ...)
 //{
